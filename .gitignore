@@ -1,0 +1,27 @@
+# Built files
+.build-cache/
+lib/
+node_modules/
+
+boxicons-logos/
+boxicons-regular/
+boxicons-solid/
+build/
+crypto/
+evil/
+fa-brands/
+fa-regular/
+fa-solid/
+icomoon/
+feather/
+material/
+octicons/
+StyledIconBase/
+types/
+typicons/
+
+/index.d.ts
+/index.esm.js
+/index.js
+/index.ts
+/manifest.json

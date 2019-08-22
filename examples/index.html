@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<style>
+  body {
+    font-family: sans-serif;
+    background-color: #1b1b1b;
+  }
+</style>
+
+<app-icon-viewer></app-icon-viewer>
+
+<script type="module">
+  import { define, html, css, repeat, unsafeHTML, useState, useEffect } from "https://unpkg.com/@niht/haunted?module"
+  import "../lib/boxicons-logos.js"
+  import "../lib/boxicons-regular.js"
+  import "../lib/boxicons-solid.js"
+  //   import "../lib/crypto.js"
+  import "../lib/evil.js"
+  import "../lib/fa-brands.js"
+  import "../lib/fa-regular.js"
+  import "../lib/fa-solid.js"
+  //   import "../lib/feather.js"
+  import "../lib/material.js"
+  import "../lib/octicons.js"
+  import "../lib/typicons.js"
+
+  let page = 1
+  function IconViewer() {
+    //{"importPath":"styled-icons/boxicons-logos/Blogger","name":"Blogger","originalName":"blogger","pack":"boxicons-logos"},
+    const [icons, setIcons] = useState({ data: [] })
+    const [visible, setVisibleIcons] = useState({ data: [] })
+    const [isFetching, setIsFetching] = useState(false)
+
+    useEffect(() => {
+      window.addEventListener("scroll", handleScroll)
+      return () => window.removeEventListener("scroll", handleScroll)
+    }, [])
+    useEffect(() => {
+      fetch("/examples/manifest.json")
+        // .then(console.log)
+        .then(response => response.json())
+        .then(data => {
+          setIcons({ data })
+          setVisibleIcons({ data: data.slice(0, 100) })
+          page = 1
+        })
+        .catch(console.warn)
+    }, [])
+    useEffect(() => {
+      if (!isFetching) return
+      console.log("hmmm")
+      setVisibleIcons({ data: icons.data.slice(0, 100 * page++) })
+      setIsFetching(false)
+    }, [isFetching])
+
+    function handleScroll() {
+      if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return
+      console.log("Fetch more list items!")
+      setIsFetching(true)
+    }
+    return [
+      css`
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-gap: 10px;
+        grid-auto-rows: minmax(220px, auto);
+        grid-auto-flow: dense;
+        padding: 10px;
+        color: white;
+
+        .grid-item {
+          display: flex;
+          padding: 1rem;
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
+          background-color: #333;
+          border-radius: 5px;
+          justify-content: stretch;
+          align-content: stretch;
+          &:nth-child(odd) {
+            background-color: #424242;
+          }
+        }
+        .icon-card {
+          display: flex;
+          flex-direction: column;
+          -webkit-box-align: center;
+          align-items: center;
+          justify-content: space-evenly;
+          cursor: pointer;
+          color: rgb(255, 255, 255);
+          will-change: transform;
+          flex: 1;
+          transition: transform 0.5s ease-out 0s;
+          .name {
+            font-weight: 500;
+            overflow-x: scroll;
+          }
+          code {
+            text-align: center;
+            padding: 0px;
+          }
+        }
+      `,
+      html`
+        ${repeat(
+          visible.data,
+          i => i.element,
+          (i, index) => html`
+            <div class="grid-item">
+              <div class="icon-card">
+                ${unsafeHTML(`<${i.element} size="XL"></${i.element}>`)}
+                <div class="name">${i.name}</div>
+                <code>${i.importPath}</code>
+              </div>
+            </div>
+          `
+        )}
+      `,
+    ]
+  }
+
+  define("app-icon-viewer", IconViewer)
+</script>

@@ -1,0 +1,20 @@
+import { html, css, define } from 'https://unpkg.com/@niht/haunted?module'
+export function {{name}}() {
+  const attrs = {
+    {{attrs}},
+  }
+  return [
+    css`
+      display:inline-block;vertical-align:{{verticalAlign}};overflow:hidden;
+      &([size="XS"]) { transform:scale(0.5); }
+      &([size="S"]) { transform:scale(0.8); }
+      &([size="M"]) { transform:scale(1.0); }
+      &([size="L"]) { transform:scale(1.5); }
+      &([size="XL"]) { transform:scale(2.0); }
+      &([size="XXL"]) { transform:scale(3.0); }
+      &([size="XXXL"]) { transform:scale(4.0); }
+    `,
+    html`<svg fill=${attrs.fill} xmlns=${attrs.xmlns} width="{{width}}" height="{{height}}" viewBox="{{viewBox}}">{{svg}}</svg>`
+  ]
+}
+define('{{element}}', {{name}})
